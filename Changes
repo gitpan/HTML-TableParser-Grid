@@ -1,3 +1,8 @@
+2007-02-16  Takeru INOUE  <takeru.inoue at gmail.com>
+
+	* release 0.0.2:
+	* add Test::NoWarnings to requires in Build.PL
+
 2007-02-14  Takeru INOUE  <takeru.inoue at gmail.com>
 
 	* release 0.0.1: created by Module::Starter
