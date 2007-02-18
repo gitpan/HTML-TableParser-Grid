@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
         'version'    => 0,
         'HTML::TableParser' => 0,
         'Test::NoWarnings' => 0,
+        'Test::Perl::Critic' => 0,
     },
     add_to_cleanup      => [ 'HTML-TableParser-Grid-*' ],
 );

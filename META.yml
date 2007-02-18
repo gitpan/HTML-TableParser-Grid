@@ -1,6 +1,6 @@
 ---
 name: HTML-TableParser-Grid
-version: v0.0.2
+version: v0.0.3
 author:
   - 'Takeru INOUE <takeru.inoue@gmail.com>'
 abstract: Provide access methods to HTML tables by indicating row and column
@@ -11,11 +11,12 @@ requires:
   HTML::TableParser: 0
   Test::More: 0
   Test::NoWarnings: 0
+  Test::Perl::Critic: 0
   version: 0
 provides:
   HTML::TableParser::Grid:
     file: lib/HTML/TableParser/Grid.pm
-    version: v0.0.2
+    version: v0.0.3
 generated_by: Module::Build version 0.2806
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
