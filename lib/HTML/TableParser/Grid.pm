@@ -4,84 +4,71 @@ use warnings;
 use strict;
 use Carp;
 
-use version; our $VERSION = qv('0.0.3');
+use version; our $VERSION = qv('0.0.4');
 
 use HTML::TableParser;
 
 sub new {
-    my $class = shift;
-    my $table_html = shift;
-    my $offset = shift || 0;
+    my($class, $table_html, $offset) = @_;
+    $offset ||= 0;
 
-    my $udata = { 
-	row => 0,
-	data => [],
+    my $udata = {
+        row => 0,
+        data => [],
     };
 
     my @request = ({
-	id => 1, # parse the first table
-	row => \&_row,
-	udata => $udata,
+        id => 1,           # parse the first table
+        row => \&_row,
+        udata => $udata,
     });
 
-    HTML::TableParser
-	->new(\@request, { Decode => 1, Trim => 1, Chomp => 1 })
-	->parse($table_html) or croak $@;
+    HTML::TableParser->new(\@request, { Decode => 1, Trim => 1, Chomp => 1 })
+            ->parse($table_html) or croak $@;
 
     bless {
-	data => $udata->{data},
-	offset => $offset,
+        data => $udata->{data},
+        offset => $offset,
     }, $class;
 }
 
 sub cell {
-    my $self = shift;
-    my ($row, $column) = @_;
-
+    my($self, $row, $column) = @_;
     $column -= $self->{offset};
     $row -= $self->{offset};
-
     $self->{data}[$row][$column];
 }
 
 sub row {
-    my $self = shift;
-    my ($row) = @_;
-
+    my($self, $row) = @_;
     $row -= $self->{offset};
-
     @{ $self->{data}[$row] };
 }
 
 sub column {
-    my $self = shift;
-    my ($column) = @_;
-
+    my($self, $column) = @_;
     my @results;
     for my $row (@{ $self->{data} }) {
-	push @results, $row->[$column];
+        push @results, $row->[$column];
     }
-
     @results;
 }
 
 sub num_columns {
-    my $self = shift;
-    my $row = shift || $self->{offset};
+    my($self, $row) = @_;
+    $row ||= $self->{offset};
     scalar @{ $self->{data}[$row - $self->{offset}] };
 }
 
 sub num_rows {
-    my $self = shift;
+    my($self) = @_;
     scalar @{ $self->{data} };
 }
 
 sub _row {
-    my ($id, $line, $cols, $udata) = @_;
-
+    my($id, $line, $cols, $udata) = @_;
     my $column = 0;
-    $udata->{data}[$udata->{row}][$column++] = $_ for @$cols;
-
+    $udata->{data}[$udata->{row}][$column++] = $_ for @{ $cols };
     $udata->{row}++;
 }
 
@@ -97,7 +84,7 @@ HTML::TableParser::Grid - Provide access methods to HTML tables by indicating ro
 
     use HTML::TableParser::Grid;
 
-    ## Assuming that $html represents an HTML table like this;
+    # Assuming that $html represents an HTML table like this:
     # +----+----+-------+
     # | 00 | 01 | 02-12 |
     # +----+----+       |
@@ -106,18 +93,18 @@ HTML::TableParser::Grid - Provide access methods to HTML tables by indicating ro
 
     my $parser = HTML::TableParser::Grid->new($html);
 
-    $parser->cell(0,0);	# 00
-    $parser->cell(0,2);	# 02-12
-    $parser->cell(1,1);	# 10-11
+    $parser->cell(0,0); # 00
+    $parser->cell(0,2); # 02-12
+    $parser->cell(1,1); # 10-11
 
-    $parser->row(1);	# qw(10-11 10-11 02-12)
+    $parser->row(1);    # qw(10-11 10-11 02-12)
 
-    $parser->column(1);	# qw(01 10-11)
+    $parser->column(1); # qw(01 10-11)
 
     ## Indicates 1 offset
     my $parser = HTML::TableParser::Grid->new($html, 1);
 
-    $parser->cell(1,1);	# 00
+    $parser->cell(1,1); # 00
 
 
 =head1 DESCRIPTION
@@ -127,7 +114,7 @@ by indicating row and column. This module takes advantage when many C<rowspan>s
 and/or C<colspan>s make the table structure complicated.
 
 
-=head1 USAGE
+=head1 METHODS
 
 =head2 HTML::TableParser::Grid->new($html, [ $offset ])
 
@@ -168,12 +155,12 @@ L<HTML::TableParser>
 
 =head1 AUTHOR
 
-Takeru INOUE  C<< <takeru.inoue@gmail.com> >>
+Takeru INOUE  C<< <takeru.inoue _ gmail.com> >>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2007, Takeru INOUE C<< <takeru.inoue@gmail.com> >>. All rights reserved.
+Copyright (c) 2007, Takeru INOUE C<< <takeru.inoue _ gmail.com> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
